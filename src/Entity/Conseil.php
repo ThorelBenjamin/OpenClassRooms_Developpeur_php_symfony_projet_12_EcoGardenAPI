@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\ConseilRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -28,16 +26,6 @@ class Conseil
     #[ORM\Column(nullable: true)]
     private ?\DateTime $updated = null;
 
-    /**
-     * @var Collection<int, weather>
-     */
-    #[ORM\ManyToMany(targetEntity: weather::class, inversedBy: 'conseils')]
-    private Collection $weather;
-
-    public function __construct()
-    {
-        $this->weather = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -93,27 +81,4 @@ class Conseil
         return $this;
     }
 
-    /**
-     * @return Collection<int, weather>
-     */
-    public function getWeather(): Collection
-    {
-        return $this->weather;
-    }
-
-    public function addWeather(weather $weather): static
-    {
-        if (!$this->weather->contains($weather)) {
-            $this->weather->add($weather);
-        }
-
-        return $this;
-    }
-
-    public function removeWeather(weather $weather): static
-    {
-        $this->weather->removeElement($weather);
-
-        return $this;
-    }
 }
