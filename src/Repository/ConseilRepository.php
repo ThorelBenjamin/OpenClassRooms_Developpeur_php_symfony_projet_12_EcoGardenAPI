@@ -16,6 +16,41 @@ class ConseilRepository extends ServiceEntityRepository
         parent::__construct($registry, Conseil::class);
     }
 
+    public function findByCurrentMonth(): array
+    {
+        $currentMonth = (int) date('n');
+
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+        SELECT * FROM conseil c
+        WHERE JSON_CONTAINS(c.month, :month, "$")
+    ';
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue('month', json_encode($currentMonth));
+        $resultSet = $stmt->executeQuery();
+
+        return $resultSet->fetchAllAssociative();
+    }
+
+    public function findByMonth(int $month)
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+        SELECT * FROM conseil c
+        WHERE JSON_CONTAINS(c.month, :month, "$")
+    ';
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue('month', json_encode($month));
+        $resultSet = $stmt->executeQuery();
+
+        return $resultSet->fetchAllAssociative();
+    }
+
+
     //    /**
     //     * @return Conseil[] Returns an array of Conseil objects
     //     */

@@ -26,6 +26,9 @@ class Conseil
     #[ORM\Column(nullable: true)]
     private ?\DateTime $updated = null;
 
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private array $month = [];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +78,18 @@ class Conseil
     public function setUpdated(?\DateTime $updated): static
     {
         $this->updated = $updated;
+
+        return $this;
+    }
+
+    public function getMonth(): array
+    {
+        return $this->month;
+    }
+
+    public function setMonth(array $month): static
+    {
+        $this->month = $month;
 
         return $this;
     }
