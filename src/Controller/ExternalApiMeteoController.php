@@ -15,7 +15,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 final class ExternalApiMeteoController extends AbstractController
 {
     #[Route('/api/meteo', name: 'app_external_api_meteo')]
-    public function getMeteo(MeteoApi $api, TagAwareCacheInterface $cache): JsonResponse
+    public function getMeteo(MeteoApi $api): JsonResponse
     {
         $user = $this->getUser();
 
@@ -24,29 +24,15 @@ final class ExternalApiMeteoController extends AbstractController
         }
 
         $city = $user->getVille() ?? 'Paris';
-        $idCache = "getMeteo-" . $city;
-
-        $meteo = $cache->get($idCache, function (ItemInterface $item) use ($idCache, $city, $api) {
-            $item->tag("meteoCache");
-            $item->expiresAfter(3600);
-            return $api->getMeteoCity($city);
-        });
+        $meteo =  $api->getMeteoCity($city);
 
         return new JsonResponse($meteo, Response::HTTP_OK);
     }
 
     #[Route('/api/meteo/{city}', name: 'app_external_api_meteo_city')]
-    public function getMeteoCity(MeteoApi $api, string $city, TagAwareCacheInterface $cache): JsonResponse
+    public function getMeteoCity(MeteoApi $api, string $city): JsonResponse
     {
-        $idCache = "getMeteoCity-" . $city;
-
-        $meteo = $cache->get($idCache, function (ItemInterface $item) use ($idCache, $city, $api) {
-
-            $item->tag("meteoCityCache");
-            $item->expiresAfter(3600);
-            return $api->getMeteoCity($city);
-        });
-
+        $meteo = $api->getMeteoCity($city);
         return new JsonResponse($meteo, Response::HTTP_OK);
     }
 }
